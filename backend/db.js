@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+// const bcrypt = require('bcrypt')
 
 const mongoose = require('mongoose')
 dotenv.config()
@@ -36,8 +37,16 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+//hashing :
+//generate hash from a plainText 
+// userSchema.methods.createHash = 
+
+
 //Model
 const User = mongoose.model('User',userSchema)
+
+
+
 
 //Export the Model:
 module.exports={
