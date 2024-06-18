@@ -1,6 +1,6 @@
 const express = require("express");
-const app = express()
+const rootRouter = require("./routes/index");
 
-//MONGODB_URL = mongodb+srv://sameermarathe15:sameer1482@cluster0.9ypdmcg.mongodb.net/paytm
+const app = express();
 
-
+app.use("/api/v1", rootRouter);
