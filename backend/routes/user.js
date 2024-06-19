@@ -4,9 +4,9 @@ const zod = require('zod')
 const { User ,Account} = require('../db')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config')
-const { authMiddlware } = require('../middleware')
+const { authMiddleware } = require('../middleware')
 
-//During SignIn
+//During Signup
 const userInputSchema = zod.object({
     username: zod.string().min(3).max(30).email(),
     password: zod.string().min(6),
@@ -14,7 +14,7 @@ const userInputSchema = zod.object({
     lastName: zod.string().max(50),
 })
 
-//During SignUp 
+//During Signin
 const signUpSchema = zod.object({
     username: zod.string().min(3).max(30).email(),
     password: zod.string().min(6)
@@ -26,6 +26,8 @@ const updateSchema = zod.object({
     firstName: zod.string().max(50).optional(),
     lastName: zod.string().max(50).optional(),
 })
+
+
 
 router.post('/signup', async (req, res) => {
 
@@ -59,7 +61,7 @@ router.post('/signup', async (req, res) => {
 
     //Generate token:
     const token = jwt.sign({ userId }, JWT_SECRET)
-    
+
     //Success Msg
     res.json({ msg: "Tuser created successfully", token: token })
 
@@ -67,7 +69,7 @@ router.post('/signup', async (req, res) => {
 
 //Signin
 router.post('/signin', async (req, res) => {
-    const result = userInputSchema.safeParse(req.body)
+    const result = signUpSchema.safeParse(req.body)
     if (!result.success) {
         return res.status(400).json({ error: 'Invalid input' })
     }
@@ -91,17 +93,18 @@ router.post('/signin', async (req, res) => {
 })
 
 //update User info
-router.put('/user', authMiddlware, async (req, res) => {
-    const { success } = authMiddlware.safeParse(req.body)
+router.put('/user', authMiddleware, async (req, res) => {
+    const { success } = updateSchema.safeParse(req.body)
     if (!success) {
         res.status(411).json({ msg: "Error while Updating the info" })
     }
     await User.updateOne({ _id: req.userId }, req.body)
-})
-res.json({
+    res.json({
     message: "Updated successfully"
 })
-module.exports = router;
+
+})
+
 
 
 //Route to get users from the backend, filterable via firstName/lastName
@@ -128,3 +131,4 @@ router.get('/bulk',async(req,res)=>{
         }))
     })
 })
+module.exports = router;

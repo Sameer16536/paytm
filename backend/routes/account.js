@@ -49,5 +49,20 @@ router.post('/transfer',authMiddleware,async(req,res)=>{
         msg:"Transfer successful"
     })
 })
+// transfer({
+//     userId: "65ac44e10ab2ec750ca666a5",
+//     body: {
+//         to: "65ac44e40ab2ec750ca666aa",
+//         amount: 100
+//     }
+// })
+
+// transfer({
+//     userId: "65ac44e10ab2ec750ca666a5",
+//     body: {
+//         to: "65ac44e40ab2ec750ca666aa",
+//         amount: 100
+//     }
+// })
 
 module.exports = router;
