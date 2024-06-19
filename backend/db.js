@@ -37,6 +37,22 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+
+//Bank Scehma :
+const accountSchema = new mongoose.Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        //ref to user schema
+        ref:'User',
+        required:true
+    },
+    balance:{
+        type:Number,
+        required:true
+    }
+})
+
+
 //hashing :
 //generate hash from a plainText 
 // userSchema.methods.createHash = 
@@ -44,11 +60,12 @@ const userSchema = new mongoose.Schema({
 
 //Model
 const User = mongoose.model('User',userSchema)
-
+const Account = mongoose.model('Account', accountSchema);
 
 
 
 //Export the Model:
 module.exports={
-    User
+    User,
+    Account
 }

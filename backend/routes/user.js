@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const zod = require('zod')
-const { User } = require('../db')
+const { User ,Account} = require('../db')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config')
 const { authMiddlware } = require('../middleware')
@@ -51,8 +51,15 @@ router.post('/signup', async (req, res) => {
     const userId = user._id
 
 
+    //Create account:
+    await Account.create({
+        userId,
+        balance: 1 + Math.random()*10000
+    })
+
     //Generate token:
     const token = jwt.sign({ userId }, JWT_SECRET)
+    
     //Success Msg
     res.json({ msg: "Tuser created successfully", token: token })
 
@@ -95,3 +102,29 @@ res.json({
     message: "Updated successfully"
 })
 module.exports = router;
+
+
+//Route to get users from the backend, filterable via firstName/lastName
+router.get('/bulk',async(req,res)=>{
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or:[{
+            firstName:{
+                $regex:filter,
+            },
+            lastName:{
+                $regex:filter,
+            }
+        }]
+    })
+
+    res.json({
+        user:users.map(user=>({
+            username:user.username,
+            firstName:user.firstName,
+            lastName:user.lastName,
+            _id:user._id
+        }))
+    })
+})
